@@ -32,11 +32,13 @@ namespace calculator
         private List<char> fstOperand { get; set; }
 
         private float fstOperandflt { get; set; } = 0;
-        private float sndOperandflt { get; set; }
+        private float sndOperandflt { get; set; } = 0;
 
         private bool forcedOperation { get; set; } = false;
 
         private bool isFloat { get; set; } = false;
+
+
 
         public MainWindow()
         {
@@ -179,7 +181,7 @@ namespace calculator
         {
 
 
-            operatorON = false;
+
             float result = 0;
             if (_operators == Operators.PLUS)
             {
@@ -211,6 +213,10 @@ namespace calculator
             optsign.Text = "=";
 
             forcedOperation = false;
+
+
+
+
         }
 
         private void fstOperandShow()
