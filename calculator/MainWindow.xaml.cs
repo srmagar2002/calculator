@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Linq;
 
 namespace calculator
 {
@@ -33,7 +34,7 @@ namespace calculator
         private float fstOperandflt { get; set; } = 0;
         private float sndOperandflt { get; set; }
 
-
+        private bool forcedOperation { get; set; } = false;
 
         private bool isFloat { get; set; } = false;
 
@@ -52,13 +53,30 @@ namespace calculator
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
+            /*            fstOperand.Clear();
+                        inputtext.Text = string.Empty;*/
+
             if (e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9)
             {
+                if (operatorON)
+                {
+                    fstOperand.Clear();
+                    inputtext.Text = string.Empty;
+                    operatorON = false;
+                    forcedOperation = true;
+                }
                 HandleInput((e.Key - Key.NumPad0).ToString());
             }
 
             if (e.Key >= Key.D0 && e.Key <= Key.D9)
             {
+                if (operatorON)
+                {
+                    fstOperand.Clear();
+                    inputtext.Text = string.Empty;
+                    operatorON = false;
+                    forcedOperation = true;
+                }
                 HandleInput((e.Key - Key.D0).ToString());
             }
 
@@ -86,7 +104,7 @@ namespace calculator
 
             if (e.Key == Key.Enter)
             {
-                fstOperandflt = float.Parse(string.Join("", fstOperand));
+
                 calculate();
             }
             if (e.Key == Key.Back)
@@ -108,11 +126,20 @@ namespace calculator
             else if (fstOperand.Count < inputLength && int.TryParse(input, out _))
             {
                 fstOperand.Add(char.Parse(input));
+                fstOperandflt = float.Parse(string.Join("", fstOperand));
                 fstOperandShow();
+
             }
 
             else if (input == "+" || input == "-" || input == "*" || input == "/")
             {
+
+                isFloat = false;
+
+                if (forcedOperation)
+                {
+                    calculate();
+                }
                 switch (input)
                 {
                     case "+": _operators = Operators.PLUS; break;
@@ -122,14 +149,15 @@ namespace calculator
                     default: break;
                 }
                 optsign.Text = input;
-                fstOperandflt = float.Parse(string.Join("", fstOperand));
-                fstOperand.Clear();
-                sndOperandflt = fstOperandflt;
-                resulttext.Text = fstOperandflt.ToString();
-                inputtext.Text = string.Empty;
-                operatorON = true;
-            }
 
+                if (!operatorON)
+                {
+                    fstOperandflt = float.Parse(string.Join("", fstOperand));
+                    sndOperandflt = fstOperandflt;
+                    resulttext.Text = fstOperandflt.ToString();
+                    operatorON = true;
+                }
+            }
             if (input == "back")
             {
                 backspacefunction();
@@ -149,29 +177,40 @@ namespace calculator
         }
         private void calculate()
         {
+
+
+            operatorON = false;
+            float result = 0;
             if (_operators == Operators.PLUS)
             {
                 resulttext.Text = sndOperandflt.ToString() + " + " + fstOperandflt.ToString();
-                inputtext.Text = (fstOperandflt + sndOperandflt).ToString();
+                result = (fstOperandflt + sndOperandflt);
             }
             else if (_operators == Operators.MINUS)
             {
                 resulttext.Text = sndOperandflt.ToString() + " - " + fstOperandflt.ToString();
-                inputtext.Text = (sndOperandflt - fstOperandflt).ToString();
+                result = (sndOperandflt - fstOperandflt);
             }
 
             else if (_operators == Operators.DIV)
             {
                 resulttext.Text = sndOperandflt.ToString() + " / " + fstOperandflt.ToString();
-                inputtext.Text = (sndOperandflt / fstOperandflt).ToString();
+                result = (sndOperandflt / fstOperandflt);
             }
 
             else if (_operators == Operators.MUL)
             {
                 resulttext.Text = sndOperandflt.ToString() + " * " + fstOperandflt.ToString();
-                inputtext.Text = (fstOperandflt * sndOperandflt).ToString();
+                result = fstOperandflt * sndOperandflt;
             }
+
+            inputtext.Text = result.ToString();
+
+            fstOperand = result.ToString().ToList();
+
             optsign.Text = "=";
+
+            forcedOperation = false;
         }
 
         private void fstOperandShow()
