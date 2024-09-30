@@ -13,10 +13,6 @@ using System.Linq;
 
 namespace calculator
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    /// 
     public enum Operators
     {
         PLUS,
@@ -38,7 +34,7 @@ namespace calculator
 
         private bool isFloat { get; set; } = false;
 
-
+        private bool enterCalc { get; set; } = false;
 
         public MainWindow()
         {
@@ -50,13 +46,53 @@ namespace calculator
         private void Number_Click(object sender, RoutedEventArgs e)
         {
             Button button = sender as Button;
-            HandleInput(button.Content.ToString());
+
+            string input = button.Content.ToString();
+
+            if (int.TryParse(input, out _))
+            {
+
+                if (operatorON)
+                {
+                    fstOperand.Clear();
+                    inputtext.Text = string.Empty;
+                    operatorON = false;
+                    forcedOperation = true;
+                }
+
+                if (enterCalc)
+                {
+                    optsign.Text = string.Empty;
+                    fstOperand.Clear();
+                    sndOperandflt = 0;
+                    resulttext.Text = string.Empty;
+                    inputtext.Text = string.Empty;
+                    enterCalc = false;
+
+                }
+
+            }
+
+            HandleInput(input);
         }
 
-        private void Window_KeyDown(object sender, KeyEventArgs e)
+        private void clear()
         {
-            /*            fstOperand.Clear();
-                        inputtext.Text = string.Empty;*/
+            fstOperand = new List<char>();
+            fstOperandflt = 0;
+            sndOperandflt = 0;
+            resulttext.Text = string.Empty;
+            inputtext.Text = string.Empty;
+            optsign.Text = string.Empty;
+            operatorON = false;
+            forcedOperation = false;
+            enterCalc = false;
+            isFloat = false;
+        }
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            clickeffect(e);
 
             if (e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9)
             {
@@ -67,7 +103,20 @@ namespace calculator
                     operatorON = false;
                     forcedOperation = true;
                 }
+
+                if (enterCalc)
+                {
+                    optsign.Text = string.Empty;
+                    fstOperand.Clear();
+                    sndOperandflt = 0;
+                    resulttext.Text = string.Empty;
+                    inputtext.Text = string.Empty;
+                    enterCalc = false;
+
+                }
+
                 HandleInput((e.Key - Key.NumPad0).ToString());
+                e.Handled = true;
             }
 
             if (e.Key >= Key.D0 && e.Key <= Key.D9)
@@ -79,41 +128,59 @@ namespace calculator
                     operatorON = false;
                     forcedOperation = true;
                 }
-                HandleInput((e.Key - Key.D0).ToString());
+
+                if (enterCalc)
+                {
+                    optsign.Text = string.Empty;
+                    fstOperand.Clear();
+                    sndOperandflt = 0;
+                    resulttext.Text = string.Empty;
+                    inputtext.Text = string.Empty;
+                    enterCalc = false;
+
+                }
+                HandleInput((e.Key - Key.D0).ToString()); e.Handled = true;
+
             }
 
             if (e.Key == Key.Decimal || e.Key == Key.OemPeriod)
             {
-                HandleInput(".");
+                HandleInput("."); e.Handled = true;
             }
 
             if (e.Key == Key.Add)
             {
-                HandleInput("+");
+                HandleInput("+"); e.Handled = true;
             }
             else if (e.Key == Key.Subtract)
             {
-                HandleInput("-");
+                HandleInput("-"); e.Handled = true;
             }
             else if (e.Key == Key.Multiply)
             {
-                HandleInput("*");
+                HandleInput("*"); e.Handled = true;
             }
             else if (e.Key == Key.Divide)
             {
-                HandleInput("/");
+                HandleInput("/"); e.Handled = true;
             }
 
             if (e.Key == Key.Enter)
             {
-
-                calculate();
+                HandleInput("="); e.Handled = true;
             }
+
             if (e.Key == Key.Back)
             {
-                backspacefunction();
+                backspacefunction(); e.Handled = true;
+            }
+            if (e.Key == Key.C)
+            {
+                HandleInput("CLS"); e.Handled = true;
             }
         }
+
+
         private void HandleInput(string input)
         {
             int inputLength = isFloat ? 17 : 16;
@@ -135,6 +202,7 @@ namespace calculator
 
             else if (input == "+" || input == "-" || input == "*" || input == "/")
             {
+                enterCalc = false;
 
                 isFloat = false;
 
@@ -154,15 +222,32 @@ namespace calculator
 
                 if (!operatorON)
                 {
-                    fstOperandflt = float.Parse(string.Join("", fstOperand));
-                    sndOperandflt = fstOperandflt;
-                    resulttext.Text = fstOperandflt.ToString();
-                    operatorON = true;
+                    if (fstOperand.Count != 0)
+                    {
+                        fstOperandflt = float.Parse(string.Join("", fstOperand));
+                        sndOperandflt = fstOperandflt;
+                        resulttext.Text = fstOperandflt.ToString();
+                        operatorON = true;
+                    }
+                    else
+                    {
+                        calculate();
+                    }
                 }
+            }
+            if (input == "=")
+            {
+                calculate();
+                enterCalc = true;
             }
             if (input == "back")
             {
                 backspacefunction();
+            }
+
+            if (input == "CLS")
+            {
+                clear();
             }
         }
 
@@ -179,8 +264,6 @@ namespace calculator
         }
         private void calculate()
         {
-
-
 
             float result = 0;
             if (_operators == Operators.PLUS)
@@ -211,11 +294,7 @@ namespace calculator
             fstOperand = result.ToString().ToList();
 
             optsign.Text = "=";
-
             forcedOperation = false;
-
-
-
 
         }
 
@@ -228,5 +307,249 @@ namespace calculator
             }
         }
 
+        private void Window_KeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.NumPad7:
+                case Key.D7:
+                    button7.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C36"));
+                    break;
+
+                case Key.NumPad8:
+                case Key.D8:
+                    button8.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C36"));
+                    break;
+
+
+                case Key.NumPad9:
+                case Key.D9:
+                    button9.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C36"));
+                    break;
+
+
+                case Key.NumPad4:
+                case Key.D4:
+                    button4.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C36"));
+                    break;
+
+
+                case Key.NumPad5:
+                case Key.D5:
+                    button5.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C36"));
+                    break;
+
+
+                case Key.NumPad6:
+                case Key.D6:
+                    button6.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C36"));
+                    break;
+
+
+                case Key.NumPad1:
+                case Key.D1:
+                    button1.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C36"));
+                    break;
+
+
+                case Key.NumPad2:
+                case Key.D2:
+                    button2.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C36"));
+                    break;
+
+
+                case Key.NumPad3:
+                case Key.D3:
+                    button3.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C36"));
+                    break;
+
+
+                case Key.NumPad0:
+                case Key.D0:
+                    button0.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C36"));
+                    break;
+
+
+                case Key.Decimal:
+                case Key.OemPeriod:
+                    buttonPeriod.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C36"));
+                    break;
+
+
+                //signs and others
+                case Key.Add:
+                    plus.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#32332D"));
+                    break;
+
+                case Key.Subtract:
+                    minus.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#32332D"));
+                    break;
+
+                case Key.Divide:
+                    div.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#32332D"));
+                    break;
+
+                case Key.Multiply:
+                    mul.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#32332D"));
+                    break;
+
+                case Key.Back:
+                    back.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#32332D"));
+                    break;
+
+                case Key.C:
+                    cls.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#32332D"));
+                    break;
+
+                case Key.Enter:
+                    enter.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4CC2FF"));
+                    break;
+            }
+        }
+
+
+
+        private void clickeffect(KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                //numbers
+
+                case Key.NumPad7:
+                case Key.D7:
+                    button7.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#32332D"));
+                    break;
+
+                case Key.NumPad8:
+                case Key.D8:
+                    button8.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#32332D"));
+                    break;
+
+
+                case Key.NumPad9:
+                case Key.D9:
+                    button9.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#32332D"));
+                    break;
+
+
+                case Key.NumPad4:
+                case Key.D4:
+                    button4.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#32332D"));
+                    break;
+
+
+                case Key.NumPad5:
+                case Key.D5:
+                    button5.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#32332D"));
+                    break;
+
+
+                case Key.NumPad6:
+                case Key.D6:
+                    button6.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#32332D"));
+                    break;
+
+
+                case Key.NumPad1:
+                case Key.D1:
+                    button1.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#32332D"));
+                    break;
+
+
+                case Key.NumPad2:
+                case Key.D2:
+                    button2.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#32332D"));
+                    break;
+
+
+                case Key.NumPad3:
+                case Key.D3:
+                    button3.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#32332D"));
+                    break;
+
+
+                case Key.NumPad0:
+                case Key.D0:
+                    button0.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#32332D"));
+                    break;
+
+
+                case Key.Decimal:
+                case Key.OemPeriod:
+                    buttonPeriod.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#32332D"));
+                    break;
+
+
+                //signs and others
+                case Key.Add:
+                    plus.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C36"));
+                    break;
+
+                case Key.Subtract:
+                    minus.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C36"));
+                    break;
+
+                case Key.Divide:
+                    div.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C36"));
+                    break;
+
+                case Key.Multiply:
+                    mul.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C36"));
+                    break;
+
+                case Key.Back:
+                    back.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C36"));
+                    break;
+
+                case Key.C:
+                    cls.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C36"));
+                    break;
+
+                case Key.Enter:
+                    enter.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#48B1E8"));
+                    break;
+            }
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            double window_width = e.NewSize.Width;
+            double window_height = e.NewSize.Height;
+
+            //   ran.Text = $" width = {window_width}, height = {window_height}";
+
+            if (window_width >= 750 && window_height >= 600)
+            {
+                inputtext.FontSize = 60;
+                resulttext.FontSize = 35;
+                optsign.FontSize = 30;
+
+            }
+
+            if (window_width >= 1000 && window_height >= 1000)
+            {
+                inputtext.FontSize = 80;
+                resulttext.FontSize = 55;
+                optsign.FontSize = 50;
+                resulttext.Margin = new Thickness(2, 2, 40, 2);
+            }
+
+            if (window_width < 1000 || window_height < 1000)
+            {
+                inputtext.FontSize = 60;
+                resulttext.FontSize = 35;
+                optsign.FontSize = 30;
+                resulttext.Margin = new Thickness(2, 2, 23, 2);
+            }
+
+            if (window_width < 750 || window_height < 600)
+            {
+                inputtext.FontSize = 50;
+                resulttext.FontSize = 25;
+                optsign.FontSize = 20;
+            }
+
+
+        }
     }
 }
