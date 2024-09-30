@@ -1,0 +1,21 @@
+### **Installation 
+
+**Step 1: Clone the repo**
+- Open a terminal (Command Prompt, PowerShell, or Git Bash).
+- Run the following command to clone the repo.
+  ```bash
+  git clone https://github.com/srmagar2002/hangmanGame.git
+
+**Step 2: Open the project in Visual Studio**
+- Open **Visual Studio**.
+- Click **Open a project or solution**.
+- Navigate to the clone repository folder, select the .sln (solution) file, and open it.
+
+**Step 3: Run the application**
+- Click Build > Build Soution or press `ctrl+shift+B` to complie the project
+- Once the build is successful, press `f5` to run the application or click **Debug > Start Debugging**.
+
+### **Some Screenshots**
+![CALCGIF](/images/calc_showcase.gif)
+
+![CALCPIC](/images/calc_showcase2.png)
