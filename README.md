@@ -1,10 +1,13 @@
-### **Installation 
+# **Basic WPF Calculator App**
+This is a basic calculator application built I created using Windows Presentation Foundation (WPF) in C#. It supports standard arithmetic operations such as addition, subtraction, multiplication, and division.
+
+### **Installation**
 
 **Step 1: Clone the repo**
 - Open a terminal (Command Prompt, PowerShell, or Git Bash).
 - Run the following command to clone the repo.
   ```bash
-  git clone https://github.com/srmagar2002/hangmanGame.git
+  git clone https://github.com/srmagar2002/calculator.git
 
 **Step 2: Open the project in Visual Studio**
 - Open **Visual Studio**.
