@@ -1,5 +1,5 @@
 # **Basic WPF Calculator App**
-This is a basic calculator application built I created using Windows Presentation Foundation (WPF) in C#. It supports standard arithmetic operations such as addition, subtraction, multiplication, and division.
+This is a basic calculator application I created using Windows Presentation Foundation (WPF) in C#. It supports standard arithmetic operations such as addition, subtraction, multiplication, and division.
 
 ### **Installation**
 
