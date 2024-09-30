@@ -145,6 +145,24 @@ namespace calculator
 
             if (e.Key == Key.Decimal || e.Key == Key.OemPeriod)
             {
+                if (operatorON)
+                {
+                    fstOperand.Clear();
+                    inputtext.Text = string.Empty;
+                    operatorON = false;
+                    forcedOperation = true;
+                }
+
+                if (enterCalc)
+                {
+                    optsign.Text = string.Empty;
+                    fstOperand.Clear();
+                    sndOperandflt = 0;
+                    resulttext.Text = string.Empty;
+                    inputtext.Text = string.Empty;
+                    enterCalc = false;
+
+                }
                 HandleInput("."); e.Handled = true;
             }
 
@@ -295,6 +313,7 @@ namespace calculator
 
             optsign.Text = "=";
             forcedOperation = false;
+            isFloat = false;
 
         }
 
