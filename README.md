@@ -1,6 +1,16 @@
 # **Basic WPF Calculator App**
 This is a basic calculator application I created using Windows Presentation Foundation (WPF) in C#. It supports standard arithmetic operations such as addition, subtraction, multiplication, and division.
 
+### **History Feature (2024-10-03)**
+he History ListView component displays a log of previous calculations, allowing users to review or select past operations for reuse in the calculator.
+
+**Features:**
+- Displays the operands, operator, and result of each calculation in a stacked format.
+- Supports auto-scrolling, showing the most recent calculations at the top.
+- Limits the history to 20 entries to avoid clutter.
+- Allows users to reselect a previous calculation from the history, reloading its operands and operator back into the calculator for further use.
+- Press `CH` to clear history
+
 ### **Installation**
 
 **Step 1: Clone the repo**
@@ -22,3 +32,8 @@ This is a basic calculator application I created using Windows Presentation Foun
 ![CALCGIF](/images/calc_showcase.gif)
 
 ![CALCPIC](/images/calc_showcase2.png)
+
+**History Feature**
+![CALCHISTORYGIF](/images/historyShowcase.gif)
+
+![CALCHISTORYPIC](/images/history_showcase2.png)
