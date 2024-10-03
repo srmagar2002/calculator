@@ -417,9 +417,17 @@
             Name="cls"
             Grid.Row="6"
             Grid.Column="0"
-            Grid.ColumnSpan="2"
+            Grid.ColumnSpan="1"
             Click="Number_Click"
             Content="CLS"
+            FontSize="35"
+            Style="{StaticResource CalculatorButtonStyle_Signs}" />
+       
+        <Button
+            Click="ClearHistory_Click"
+            Grid.Row="6"
+            Grid.Column="1"
+            Content="CH"
             FontSize="35"
             Style="{StaticResource CalculatorButtonStyle_Signs}" />
 

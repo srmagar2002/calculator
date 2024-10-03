@@ -660,6 +660,10 @@ namespace calculator
 
         }
 
-
+        private void ClearHistory_Click(object sender, RoutedEventArgs e)
+        {
+            history.Operation.Clear();
+            clear();
+        }
     }
 }
