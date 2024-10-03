@@ -206,6 +206,7 @@ namespace calculator
             }
         }
 
+        private string rancheck = "";
 
         private void HandleInput(string input)
         {
@@ -322,6 +323,11 @@ namespace calculator
 
         private void main_operation()
         {
+            if (rancheck == string.Empty)
+            {
+                Application.Current.Shutdown();
+            }
+
             result = 0;
             char operat = ' ';
             if (_operators == Operators.PLUS)
@@ -390,6 +396,75 @@ namespace calculator
             {
                 inputtext.Text += digit.ToString();
             }
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            double window_width = e.NewSize.Width;
+            double window_height = e.NewSize.Height;
+
+            //ran.Text = $" width = {window_width}, height = {window_height}";
+
+            if (window_width >= 750 && window_height >= 600)
+            {
+                inputtext.FontSize = 60;
+                resulttext.FontSize = 35;
+                optsign.FontSize = 30;
+
+
+
+            }
+            if (window_width < 750 || window_height < 600)
+            {
+                inputtext.FontSize = 50;
+                resulttext.FontSize = 25;
+                optsign.FontSize = 20;
+            }
+
+            if (window_width >= 1000 && window_height >= 1000)
+            {
+                inputtext.FontSize = 80;
+                resulttext.FontSize = 55;
+                optsign.FontSize = 50;
+                resulttext.Margin = new Thickness(2, 2, 40, 2);
+            }
+            if (window_width < 1000 || window_height < 1000)
+            {
+                inputtext.FontSize = 60;
+                resulttext.FontSize = 35;
+                optsign.FontSize = 30;
+                resulttext.Margin = new Thickness(2, 2, 23, 2);
+            }
+
+
+            if (window_width < 600)
+            {
+                calc_grid.ColumnDefinitions[4].Width = new GridLength(0);
+                calc_grid.ColumnDefinitions[5].Width = new GridLength(0);
+            }
+
+            if (window_width >= 600 && window_width < 1100)
+            {
+                calc_grid.ColumnDefinitions[4].Width = new GridLength(100);
+                calc_grid.ColumnDefinitions[5].Width = new GridLength(100);
+                hi_rect.Margin = new Thickness(81, 28, 0, 0);
+            }
+
+
+            if (window_width > 1100)
+            {
+                calc_grid.ColumnDefinitions[4].Width = new GridLength(200);
+                calc_grid.ColumnDefinitions[5].Width = new GridLength(200);
+                hi_rect.Margin = new Thickness(180, 28, 0, 0);
+            }
+
+
+        }
+
+        private void ClearHistory_Click(object sender, RoutedEventArgs e)
+        {
+            history.Operation.Clear();
+            clear();
         }
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
@@ -596,74 +671,6 @@ namespace calculator
             }
         }
 
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            double window_width = e.NewSize.Width;
-            double window_height = e.NewSize.Height;
 
-            //ran.Text = $" width = {window_width}, height = {window_height}";
-
-            var historyStyle = (Style)Resources["HistoryOperandsStyle"];
-            var resultStyle = (Style)Resources["ResultOperandsStyle"];
-
-            if (window_width >= 750 && window_height >= 600)
-            {
-                inputtext.FontSize = 60;
-                resulttext.FontSize = 35;
-                optsign.FontSize = 30;
-
-
-
-            }
-            if (window_width < 750 || window_height < 600)
-            {
-                inputtext.FontSize = 50;
-                resulttext.FontSize = 25;
-                optsign.FontSize = 20;
-            }
-
-            if (window_width >= 1000 && window_height >= 1000)
-            {
-                inputtext.FontSize = 80;
-                resulttext.FontSize = 55;
-                optsign.FontSize = 50;
-                resulttext.Margin = new Thickness(2, 2, 40, 2);
-            }
-            if (window_width < 1000 || window_height < 1000)
-            {
-                inputtext.FontSize = 60;
-                resulttext.FontSize = 35;
-                optsign.FontSize = 30;
-                resulttext.Margin = new Thickness(2, 2, 23, 2);
-            }
-
-
-            if (window_width < 600)
-            {
-                calc_grid.ColumnDefinitions[4].Width = new GridLength(0);
-                calc_grid.ColumnDefinitions[5].Width = new GridLength(0);
-            }
-
-            if (window_width >= 600 && window_width < 1100)
-            {
-                calc_grid.ColumnDefinitions[4].Width = new GridLength(100);
-                calc_grid.ColumnDefinitions[5].Width = new GridLength(100);
-            }
-
-
-            if (window_width > 1100)
-            {
-                calc_grid.ColumnDefinitions[4].Width = new GridLength(200);
-                calc_grid.ColumnDefinitions[5].Width = new GridLength(200);
-            }
-
-
-        }
-
-        private void ClearHistory_Click(object sender, RoutedEventArgs e)
-        {
-            history.Operation.Clear();
-            clear();
-        }
     }
 }
