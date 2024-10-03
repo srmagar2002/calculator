@@ -33,7 +33,8 @@ he History ListView component displays a log of previous calculations, allowing 
 
 ![CALCPIC](/images/calc_showcase2.png)
 
-**History Feature**
+# **History Feature**
+
 ![CALCHISTORYGIF](/images/historyShowcase.gif)
 
 ![CALCHISTORYPIC](/images/history_showcase2.png)
