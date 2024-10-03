@@ -29,18 +29,24 @@ namespace calculator
 
         private float fstOperandflt { get; set; } = 0;
         private float sndOperandflt { get; set; } = 0;
-
+        private float result { get; set; }
         private bool forcedOperation { get; set; } = false;
 
         private bool isFloat { get; set; } = false;
 
         private bool enterCalc { get; set; } = false;
 
+        static History history = new History();
+
+        static Operations opt;
+
         public MainWindow()
         {
             InitializeComponent();
 
             fstOperand = new List<char>();
+
+            this.DataContext = history;
         }
 
         private void Number_Click(object sender, RoutedEventArgs e)
@@ -185,7 +191,9 @@ namespace calculator
 
             if (e.Key == Key.Enter)
             {
-                HandleInput("="); e.Handled = true;
+                HandleInput("=");
+                e.Handled = true;
+
             }
 
             if (e.Key == Key.Back)
@@ -228,6 +236,7 @@ namespace calculator
                 {
                     calculate();
                 }
+
                 switch (input)
                 {
                     case "+": _operators = Operators.PLUS; break;
@@ -236,6 +245,7 @@ namespace calculator
                     case "*": _operators = Operators.MUL; break;
                     default: break;
                 }
+
                 optsign.Text = input;
 
                 if (!operatorON)
@@ -283,7 +293,34 @@ namespace calculator
         private void calculate()
         {
 
-            float result = 0;
+            if (history.Operation.Count != 0)
+            {
+                if (history.Operation.Last()._fstoperand == fstOperandflt &&
+                    history.Operation.Last()._sndoperand == sndOperandflt &&
+                    history.Operation.Last()._opt == _operators)
+                {
+
+                    sndOperandflt = result;
+
+                    main_operation();
+                }
+                else
+                {
+                    main_operation();
+                }
+            }
+            else
+            {
+                main_operation();
+            }
+
+            //2+3=5
+        }
+
+        private void main_operation()
+        {
+            result = 0;
+
             if (_operators == Operators.PLUS)
             {
                 resulttext.Text = sndOperandflt.ToString() + " + " + fstOperandflt.ToString();
@@ -299,13 +336,19 @@ namespace calculator
             {
                 resulttext.Text = sndOperandflt.ToString() + " / " + fstOperandflt.ToString();
                 result = (sndOperandflt / fstOperandflt);
+
             }
 
             else if (_operators == Operators.MUL)
             {
                 resulttext.Text = sndOperandflt.ToString() + " * " + fstOperandflt.ToString();
                 result = fstOperandflt * sndOperandflt;
+
             }
+
+            opt = new Operations() { _fstoperand = fstOperandflt, _sndoperand = sndOperandflt, _opt = _operators, _result = result };
+
+            history.AddOperation(opt);
 
             inputtext.Text = result.ToString();
 
@@ -314,7 +357,7 @@ namespace calculator
             optsign.Text = "=";
             forcedOperation = false;
             isFloat = false;
-
+            operatorON = false;
         }
 
         private void fstOperandShow()
