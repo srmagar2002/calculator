@@ -24,13 +24,26 @@
 
     <Window.Resources>
         <Style x:Key="TextblockStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="20" />
-            <Setter Property="Foreground" Value="White" />
             <Setter Property="Padding" Value="1" />
             <Setter Property="TextAlignment" Value="Right" />
         </Style>
 
-        <!--  ListView ItemContainerStyle for hover effect  -->
+        <Style
+            x:Key="HistoryOperandsStyle"
+            BasedOn="{StaticResource TextblockStyle}"
+            TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="Foreground" Value="#9A9D9F" />
+        </Style>
+
+        <Style
+            x:Key="ResultOperandsStyle"
+            BasedOn="{StaticResource TextblockStyle}"
+            TargetType="TextBlock">
+            <Setter Property="FontSize" Value="30" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
         <Style x:Key="ListViewItemStyle" TargetType="ListViewItem">
             <Setter Property="Padding" Value="1" />
             <Setter Property="Margin" Value="5" />
@@ -56,15 +69,10 @@
             </Setter>
 
             <Style.Triggers>
-                <!--  Hover effect  -->
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#3C3C36" />
                 </Trigger>
-                <!--  Selected item style  -->
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#3A3C38" />
-                    <Setter Property="Foreground" Value="White" />
-                </Trigger>
+
             </Style.Triggers>
         </Style>
 
@@ -122,10 +130,12 @@
             </Style.Triggers>
         </Style>
 
+        <local:OperatorToSignConverter x:Key="OperatorToSignConverter" />
+
     </Window.Resources>
 
 
-    <Grid>
+    <Grid x:Name="calc_grid">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
@@ -157,6 +167,16 @@
             FontSize="30"
             TextAlignment="Center" />-->
         <!--  Numbers  -->
+
+        <TextBlock
+            Grid.Row="0"
+            Grid.Column="4"
+            Grid.ColumnSpan="2"
+            FontSize="20"
+            Foreground="White"
+            Text="History"
+            TextAlignment="Center" />
+
         <TextBlock
             x:Name="resulttext"
             Grid.Row="0"
@@ -166,8 +186,9 @@
             VerticalAlignment="Center"
             FontSize="25"
             FontWeight="SemiBold"
-            Foreground="White"
+            Foreground="#9A9D9F"
             TextAlignment="Right" />
+
         <TextBlock
             x:Name="inputtext"
             Grid.Row="1"
@@ -193,7 +214,7 @@
                 VerticalAlignment="Center"
                 FontSize="20"
                 FontWeight="Bold"
-                Foreground="White"
+                Foreground="#9A9D9F"
                 TextAlignment="Center" />
         </Grid>
 
@@ -208,11 +229,18 @@
             Foreground="White"
             ItemContainerStyle="{StaticResource ListViewItemStyle}"
             ItemsSource="{Binding Operation}"
-            ScrollViewer.VerticalScrollBarVisibility="Auto">
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            SelectionChanged="ListView_SelectionChanged">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Margin="0,5" Orientation="Vertical">
-                        <TextBlock Style="{StaticResource TextblockStyle}" Text="{Binding _fstoperand}" />
+                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource HistoryOperandsStyle}" Text="{Binding _sndoperand}" />
+                            <TextBlock Style="{StaticResource HistoryOperandsStyle}" Text="{Binding _opt_enum, Converter={StaticResource OperatorToSignConverter}}" />
+                            <TextBlock Style="{StaticResource HistoryOperandsStyle}" Text="{Binding _fstoperand}" />
+                            <TextBlock Style="{StaticResource HistoryOperandsStyle}" Text="=" />
+                        </StackPanel>
+                        <TextBlock Style="{StaticResource ResultOperandsStyle}" Text="{Binding _result}" />
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>

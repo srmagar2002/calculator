@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 
 namespace calculator
 {
@@ -13,44 +15,55 @@ namespace calculator
         public float _fstoperand { get; set; }
         public float _sndoperand { get; set; }
 
-        public Operators _opt { get; set; }
+        public Operators _opt_enum { get; set; }
 
         public float _result { get; set; }
 
     }
 
-    public class OperationView
-    {
-        public string lefthandside { get; set; }
-        public string righthandside { get; set; }
-    }
     public class History
     {
-        public List<Operations> Operation { get; set; }
-        public ObservableCollection<OperationView> OperationViews { get; set; }
+        public ObservableCollection<Operations> Operation { get; set; }
         public History()
         {
-            Operation = new List<Operations>();
-            OperationViews = new ObservableCollection<OperationView>();
+            Operation = new ObservableCollection<Operations>();
         }
 
         public void AddOperation(Operations operation)
         {
-            string lhs = $"{operation._sndoperand} {operation._opt} {operation._fstoperand}";
-            string rhs = $"{operation._result}";
+            Operation.Insert(0, operation);
 
-            OperationView view = new OperationView()
+            if (Operation.Count >= 20)
             {
-                lefthandside = lhs,
-                righthandside = rhs
-            };
-
-            Operation.Add(operation);
-            OperationViews.Add(view);
-
+                Operation.RemoveAt(Operation.Count - 1);
+            }
         }
 
 
+    }
+
+    public class OperatorToSignConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Operators op)
+            {
+                return op switch
+                {
+                    Operators.PLUS => "+",
+                    Operators.MINUS => "-",
+                    Operators.DIV => "/",
+                    Operators.MUL => "*",
+                    _ => string.Empty
+                };
+            }
+            return string.Empty;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

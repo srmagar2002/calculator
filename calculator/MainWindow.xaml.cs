@@ -295,9 +295,9 @@ namespace calculator
 
             if (history.Operation.Count != 0)
             {
-                if (history.Operation.Last()._fstoperand == fstOperandflt &&
-                    history.Operation.Last()._sndoperand == sndOperandflt &&
-                    history.Operation.Last()._opt == _operators)
+                if (history.Operation[0]._fstoperand == fstOperandflt &&
+                    history.Operation[0]._sndoperand == sndOperandflt &&
+                    history.Operation[0]._opt_enum == _operators)
                 {
 
                     sndOperandflt = result;
@@ -314,13 +314,16 @@ namespace calculator
                 main_operation();
             }
 
+            opt = new Operations() { _fstoperand = fstOperandflt, _sndoperand = sndOperandflt, _opt_enum = _operators, _result = result };
+            history.AddOperation(opt);
+
             //2+3=5
         }
 
         private void main_operation()
         {
             result = 0;
-
+            char operat = ' ';
             if (_operators == Operators.PLUS)
             {
                 resulttext.Text = sndOperandflt.ToString() + " + " + fstOperandflt.ToString();
@@ -337,6 +340,7 @@ namespace calculator
                 resulttext.Text = sndOperandflt.ToString() + " / " + fstOperandflt.ToString();
                 result = (sndOperandflt / fstOperandflt);
 
+
             }
 
             else if (_operators == Operators.MUL)
@@ -346,9 +350,7 @@ namespace calculator
 
             }
 
-            opt = new Operations() { _fstoperand = fstOperandflt, _sndoperand = sndOperandflt, _opt = _operators, _result = result };
 
-            history.AddOperation(opt);
 
             inputtext.Text = result.ToString();
 
@@ -358,6 +360,27 @@ namespace calculator
             forcedOperation = false;
             isFloat = false;
             operatorON = false;
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListView listView = sender as ListView;
+
+            var selectedItem = listView.SelectedItem;
+
+            if (selectedItem != null)
+            {
+
+                var operation = selectedItem as Operations;
+
+                if (operation != null)
+                {
+                    sndOperandflt = operation._sndoperand;
+                    fstOperandflt = operation._fstoperand;
+                    _operators = operation._opt_enum;
+                    main_operation();
+                }
+            }
         }
 
         private void fstOperandShow()
@@ -611,7 +634,20 @@ namespace calculator
                 optsign.FontSize = 20;
             }
 
+            if (window_width < 600)
+            {
+                calc_grid.ColumnDefinitions[4].Width = new GridLength(0);
+                calc_grid.ColumnDefinitions[5].Width = new GridLength(0);
+            }
+
+            if (window_width >= 600)
+            {
+                calc_grid.ColumnDefinitions[4].Width = new GridLength(100);
+                calc_grid.ColumnDefinitions[5].Width = new GridLength(100);
+            }
 
         }
+
+
     }
 }
