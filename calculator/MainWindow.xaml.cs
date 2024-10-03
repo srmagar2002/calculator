@@ -601,7 +601,10 @@ namespace calculator
             double window_width = e.NewSize.Width;
             double window_height = e.NewSize.Height;
 
-            //   ran.Text = $" width = {window_width}, height = {window_height}";
+            //ran.Text = $" width = {window_width}, height = {window_height}";
+
+            var historyStyle = (Style)Resources["HistoryOperandsStyle"];
+            var resultStyle = (Style)Resources["ResultOperandsStyle"];
 
             if (window_width >= 750 && window_height >= 600)
             {
@@ -609,6 +612,14 @@ namespace calculator
                 resulttext.FontSize = 35;
                 optsign.FontSize = 30;
 
+
+
+            }
+            if (window_width < 750 || window_height < 600)
+            {
+                inputtext.FontSize = 50;
+                resulttext.FontSize = 25;
+                optsign.FontSize = 20;
             }
 
             if (window_width >= 1000 && window_height >= 1000)
@@ -618,7 +629,6 @@ namespace calculator
                 optsign.FontSize = 50;
                 resulttext.Margin = new Thickness(2, 2, 40, 2);
             }
-
             if (window_width < 1000 || window_height < 1000)
             {
                 inputtext.FontSize = 60;
@@ -627,12 +637,6 @@ namespace calculator
                 resulttext.Margin = new Thickness(2, 2, 23, 2);
             }
 
-            if (window_width < 750 || window_height < 600)
-            {
-                inputtext.FontSize = 50;
-                resulttext.FontSize = 25;
-                optsign.FontSize = 20;
-            }
 
             if (window_width < 600)
             {
@@ -640,11 +644,19 @@ namespace calculator
                 calc_grid.ColumnDefinitions[5].Width = new GridLength(0);
             }
 
-            if (window_width >= 600)
+            if (window_width >= 600 && window_width < 1100)
             {
                 calc_grid.ColumnDefinitions[4].Width = new GridLength(100);
                 calc_grid.ColumnDefinitions[5].Width = new GridLength(100);
             }
+
+
+            if (window_width > 1100)
+            {
+                calc_grid.ColumnDefinitions[4].Width = new GridLength(200);
+                calc_grid.ColumnDefinitions[5].Width = new GridLength(200);
+            }
+
 
         }
 

@@ -26,21 +26,23 @@
         <Style x:Key="TextblockStyle" TargetType="TextBlock">
             <Setter Property="Padding" Value="1" />
             <Setter Property="TextAlignment" Value="Right" />
+            <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
 
         <Style
             x:Key="HistoryOperandsStyle"
             BasedOn="{StaticResource TextblockStyle}"
             TargetType="TextBlock">
-            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontSize" Value="25" />
             <Setter Property="Foreground" Value="#9A9D9F" />
+
         </Style>
 
         <Style
             x:Key="ResultOperandsStyle"
             BasedOn="{StaticResource TextblockStyle}"
             TargetType="TextBlock">
-            <Setter Property="FontSize" Value="30" />
+            <Setter Property="FontSize" Value="50" />
             <Setter Property="Foreground" Value="White" />
         </Style>
 
@@ -156,8 +158,8 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <!--
-        <TextBlock
+
+        <!--     <TextBlock
             x:Name="ran"
             Grid.Row="7"
             Grid.Column="0"
@@ -176,6 +178,20 @@
             Foreground="White"
             Text="History"
             TextAlignment="Center" />
+
+        <Rectangle
+            Grid.Column="4"
+            Grid.ColumnSpan="2"
+            Width="38"
+            Height="4"
+            Margin="81,28,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            RadiusX="1"
+            RadiusY="32"
+            Stroke="#FF48B1E8"
+            StrokeThickness="2" />
+
 
         <TextBlock
             x:Name="resulttext"
@@ -224,6 +240,7 @@
             Grid.Column="4"
             Grid.ColumnSpan="2"
             HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
             Background="#1E201C"
             BorderThickness="0"
             Foreground="White"
@@ -405,6 +422,7 @@
             Content="CLS"
             FontSize="35"
             Style="{StaticResource CalculatorButtonStyle_Signs}" />
+
 
 
     </Grid>
