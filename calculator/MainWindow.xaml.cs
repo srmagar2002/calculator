@@ -29,18 +29,24 @@ namespace calculator
 
         private float fstOperandflt { get; set; } = 0;
         private float sndOperandflt { get; set; } = 0;
-
+        private float result { get; set; }
         private bool forcedOperation { get; set; } = false;
 
         private bool isFloat { get; set; } = false;
 
         private bool enterCalc { get; set; } = false;
 
+        static History history = new History();
+
+        static Operations opt;
+
         public MainWindow()
         {
             InitializeComponent();
 
             fstOperand = new List<char>();
+
+            this.DataContext = history;
         }
 
         private void Number_Click(object sender, RoutedEventArgs e)
@@ -185,7 +191,9 @@ namespace calculator
 
             if (e.Key == Key.Enter)
             {
-                HandleInput("="); e.Handled = true;
+                HandleInput("=");
+                e.Handled = true;
+
             }
 
             if (e.Key == Key.Back)
@@ -228,6 +236,7 @@ namespace calculator
                 {
                     calculate();
                 }
+
                 switch (input)
                 {
                     case "+": _operators = Operators.PLUS; break;
@@ -236,6 +245,7 @@ namespace calculator
                     case "*": _operators = Operators.MUL; break;
                     default: break;
                 }
+
                 optsign.Text = input;
 
                 if (!operatorON)
@@ -283,7 +293,37 @@ namespace calculator
         private void calculate()
         {
 
-            float result = 0;
+            if (history.Operation.Count != 0)
+            {
+                if (history.Operation[0]._fstoperand == fstOperandflt &&
+                    history.Operation[0]._sndoperand == sndOperandflt &&
+                    history.Operation[0]._opt_enum == _operators)
+                {
+
+                    sndOperandflt = result;
+
+                    main_operation();
+                }
+                else
+                {
+                    main_operation();
+                }
+            }
+            else
+            {
+                main_operation();
+            }
+
+            opt = new Operations() { _fstoperand = fstOperandflt, _sndoperand = sndOperandflt, _opt_enum = _operators, _result = result };
+            history.AddOperation(opt);
+
+            //2+3=5
+        }
+
+        private void main_operation()
+        {
+            result = 0;
+            char operat = ' ';
             if (_operators == Operators.PLUS)
             {
                 resulttext.Text = sndOperandflt.ToString() + " + " + fstOperandflt.ToString();
@@ -299,13 +339,18 @@ namespace calculator
             {
                 resulttext.Text = sndOperandflt.ToString() + " / " + fstOperandflt.ToString();
                 result = (sndOperandflt / fstOperandflt);
+
+
             }
 
             else if (_operators == Operators.MUL)
             {
                 resulttext.Text = sndOperandflt.ToString() + " * " + fstOperandflt.ToString();
                 result = fstOperandflt * sndOperandflt;
+
             }
+
+
 
             inputtext.Text = result.ToString();
 
@@ -314,7 +359,28 @@ namespace calculator
             optsign.Text = "=";
             forcedOperation = false;
             isFloat = false;
+            operatorON = false;
+        }
 
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListView listView = sender as ListView;
+
+            var selectedItem = listView.SelectedItem;
+
+            if (selectedItem != null)
+            {
+
+                var operation = selectedItem as Operations;
+
+                if (operation != null)
+                {
+                    sndOperandflt = operation._sndoperand;
+                    fstOperandflt = operation._fstoperand;
+                    _operators = operation._opt_enum;
+                    main_operation();
+                }
+            }
         }
 
         private void fstOperandShow()
@@ -535,7 +601,10 @@ namespace calculator
             double window_width = e.NewSize.Width;
             double window_height = e.NewSize.Height;
 
-            //   ran.Text = $" width = {window_width}, height = {window_height}";
+            //ran.Text = $" width = {window_width}, height = {window_height}";
+
+            var historyStyle = (Style)Resources["HistoryOperandsStyle"];
+            var resultStyle = (Style)Resources["ResultOperandsStyle"];
 
             if (window_width >= 750 && window_height >= 600)
             {
@@ -543,6 +612,14 @@ namespace calculator
                 resulttext.FontSize = 35;
                 optsign.FontSize = 30;
 
+
+
+            }
+            if (window_width < 750 || window_height < 600)
+            {
+                inputtext.FontSize = 50;
+                resulttext.FontSize = 25;
+                optsign.FontSize = 20;
             }
 
             if (window_width >= 1000 && window_height >= 1000)
@@ -552,7 +629,6 @@ namespace calculator
                 optsign.FontSize = 50;
                 resulttext.Margin = new Thickness(2, 2, 40, 2);
             }
-
             if (window_width < 1000 || window_height < 1000)
             {
                 inputtext.FontSize = 60;
@@ -561,14 +637,29 @@ namespace calculator
                 resulttext.Margin = new Thickness(2, 2, 23, 2);
             }
 
-            if (window_width < 750 || window_height < 600)
+
+            if (window_width < 600)
             {
-                inputtext.FontSize = 50;
-                resulttext.FontSize = 25;
-                optsign.FontSize = 20;
+                calc_grid.ColumnDefinitions[4].Width = new GridLength(0);
+                calc_grid.ColumnDefinitions[5].Width = new GridLength(0);
+            }
+
+            if (window_width >= 600 && window_width < 1100)
+            {
+                calc_grid.ColumnDefinitions[4].Width = new GridLength(100);
+                calc_grid.ColumnDefinitions[5].Width = new GridLength(100);
+            }
+
+
+            if (window_width > 1100)
+            {
+                calc_grid.ColumnDefinitions[4].Width = new GridLength(200);
+                calc_grid.ColumnDefinitions[5].Width = new GridLength(200);
             }
 
 
         }
+
+
     }
 }
