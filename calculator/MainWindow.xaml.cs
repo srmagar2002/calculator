@@ -206,7 +206,7 @@ namespace calculator
             }
         }
 
-        private string rancheck = "";
+        private string rancheck = "S1u2g3a4m";
 
         private void HandleInput(string input)
         {
